@@ -202,11 +202,8 @@ def feline_fixes(typed, source, limit):
     # print(typed, source)
     # my version: len([line for line in output.split('\n') if 'funcname' in line]) < 10
     
-    if typed[1:] == '' or source[1:] == '':
-        if typed[0] != source[0]:
-            return abs(len(typed) - len(source)) + 1
-        else:
-            return abs(len(typed) - len(source)) 
+    if typed == '' or source == '':
+        return len(typed) + len(source)
         
     elif typed[0] == source[0]:
         return feline_fixes(typed[1:], source[1:], limit)
@@ -215,18 +212,6 @@ def feline_fixes(typed, source, limit):
         if limit == 0:
             return 10000
         return feline_fixes(typed[1:], source[1:], limit-1) + 1
-        
-   
- 
-
-    
-   
-
-
-        
-
-
-    return help(typed, source)
 
     # END PROBLEM 6
 
@@ -246,22 +231,22 @@ def minimum_mewtations(start, goal, limit):
     >>> minimum_mewtations("ckiteus", "kittens", big_limit) # ckiteus -> kiteus -> kitteus -> kittens
     3
     """
-    assert False, 'Remove this line'
-    if ______________:  # Fill in the condition
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
-    elif ___________:  # Feel free to remove or add additional cases
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+    # print(start, goal)
+    if len(start) == 0 or len(goal) == 0:
+        return len(start) + len(goal)
+    
+    elif start[0] == goal[0]:
+        return minimum_mewtations(start[1:], goal[1:], limit)
     else:
-        add = ...  # Fill in these lines
-        remove = ...
-        substitute = ...
-        # BEGIN
-        "*** YOUR CODE HERE ***"
-        # END
+        if limit == 0:
+            return 10000
+        add = minimum_mewtations(start, goal[1:], limit-1) + 1  # Fill in these lines
+        # print(limit)
+        remove = minimum_mewtations(start[1:], goal, limit-1) + 1
+        substitute = minimum_mewtations(start[1:], goal[1:], limit-1) + 1
+        return min(add, remove,substitute)
+
+
 
 
 def final_diff(typed, source, limit):

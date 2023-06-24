@@ -3,6 +3,7 @@
 from utils import lower, split, remove_punctuation, lines_from_file
 from ucb import main, interact, trace
 from datetime import datetime
+import numpy as np
 
 
 ###########
@@ -241,7 +242,6 @@ def minimum_mewtations(start, goal, limit):
         if limit == 0:
             return 10000
         add = minimum_mewtations(start, goal[1:], limit-1) + 1  # Fill in these lines
-        # print(limit)
         remove = minimum_mewtations(start[1:], goal, limit-1) + 1
         substitute = minimum_mewtations(start[1:], goal[1:], limit-1) + 1
         return min(add, remove,substitute)
@@ -288,6 +288,16 @@ def report_progress(typed, prompt, user_id, upload):
     """
     # BEGIN PROBLEM 8
     "*** YOUR CODE HERE ***"
+    cnt = 0
+    min_length = min(len(typed), len(prompt))
+    for i in range(min_length):
+        if typed[i] == prompt[i]:
+            cnt += 1
+        else:
+            break
+    progress = cnt / len(prompt)
+    upload({'id': user_id, 'progress': progress})
+    return progress
     # END PROBLEM 8
 
 
@@ -310,6 +320,13 @@ def time_per_word(words, times_per_player):
     """
     # BEGIN PROBLEM 9
     "*** YOUR CODE HERE ***"
+    times = [None]*len(times_per_player)
+    for user in range(len(times_per_player)):
+        times[user] = [0] * (len(times_per_player[0]) -1)
+        for i in range(len(words)):
+            times[user][i] = times_per_player[user][i+1] - times_per_player[user][i]
+
+    return match(words, times)
     # END PROBLEM 9
 
 
@@ -332,6 +349,27 @@ def fastest_words(match):
     word_indices = range(len(get_all_words(match)))    # contains an *index* for each word
     # BEGIN PROBLEM 10
     "*** YOUR CODE HERE ***"
+    # words = match['words']
+    # times = match['times']
+    minist = []
+    for i in word_indices:
+        min_num = 100
+        min_j = 1000
+        for j in player_indices:
+            # print(j, i)
+            if time(match, j, i) < min_num:
+                min_num = time(match, j, i)
+                # print(min_num)
+                min_j = j
+        minist.append(min_j)
+    
+    appart_list = [None] * len(get_all_times(match))
+    for player in player_indices:
+        appart_list[player] = []
+    for i in range(len(minist)):
+        appart_list[minist[i]].append(get_word(match, i))
+    
+    return appart_list
     # END PROBLEM 10
 
 
